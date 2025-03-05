@@ -25,9 +25,9 @@ app.post('/add-book', (req, res) => {
         // Read the existing books from books.txt
         try {
             const data = readFileSync('books.txt', 'utf8'); // Read file content
-            books = data.split('\n').map(line => line.trim()).filter(line => line); // Convert to array and remove empty lines
+            books = data.split('\n'); // Convert to array 
         } catch (err) {
-            if (err.code !== 'ENOENT') { // Ignore error if file does not exist, added so code will not crash if books.txt is not yet created
+            if (err.code !== 'ENOENT') { // Ignore error if file does not exist, added so code will not crash if books.txt is not yet
                 return res.json({ success: false, message: "Error reading the file." });
             }
         }

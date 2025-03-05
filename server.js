@@ -27,7 +27,7 @@ app.post('/add-book', (req, res) => {
             const data = readFileSync('books.txt', 'utf8'); // Read file content
             books = data.split('\n'); // Convert to array 
         } catch (err) {
-            if (err.code !== 'ENOENT') { // Ignore error if file does not exist, added so code will not crash if books.txt is not yet
+            if (err.code !== 'ENOENT') { // Ignore error if file does not exist, added so code will not crash if books.txt is not yet created
                 return res.json({ success: false, message: "Error reading the file." });
             }
         }

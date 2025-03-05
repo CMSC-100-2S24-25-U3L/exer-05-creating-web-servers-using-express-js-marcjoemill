@@ -5,7 +5,7 @@ needle.post(
     {
       bookName: "Harry Potter and the Philosopher’s Stone",
       isbn: "978-0-7475-3269-9",
-      author: "J.K. Rowling",
+      author: "J.K Rowling",
       yearPublished: "1997"
     },
     { json: true },

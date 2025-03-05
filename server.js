@@ -4,15 +4,12 @@ import { appendFileSync, readFileSync } from 'node:fs';
 const app = express();
 const PORT = 3000;
 
-//const fs = require('fs');
-//const rows = data.split('\n').map(row => row.trim()).filter(row => row);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 
 app.get('/', (req, res) => {
-    res.send('Hello! I am die. Thank you forever');
+    res.send('Hello! I am die. Thank you forever.');
 
 });
 
@@ -30,7 +27,7 @@ app.post('/add-book', (req, res) => {
             const data = readFileSync('books.txt', 'utf8'); // Read file content
             books = data.split('\n').map(line => line.trim()).filter(line => line); // Convert to array and remove empty lines
         } catch (err) {
-            if (err.code !== 'ENOENT') { // Ignore error if file does not exist
+            if (err.code !== 'ENOENT') { // Ignore error if file does not exist, added so code will not crash if books.txt is not yet created
                 return res.json({ success: false, message: "Error reading the file." });
             }
         }
@@ -51,11 +48,74 @@ app.post('/add-book', (req, res) => {
 
         const bookData = `${bookName},${isbn},${author},${yearPublished}\n`;
         appendFileSync('books.txt',  bookData, 'utf8');
-        return res.json({ success: true });
+        return res.json({ success: true, message: "Successfully added."});
 
     } else {
-        return res.json({ success: false });
+        return res.json({ success: false, message: "Invalid details." });
     }
+});
+
+
+app.get('/find-by-isbn-author', (req, res) => { // FIND BY ISBN AND AUTHOR
+
+    // Check query
+    console.log("Received query", req.query); 
+
+    const bookFound = []; // Store book if found
+    const bookList = readFileSync('books.txt', 'utf8'); // Read books.txt
+    const books = bookList.split('\n'); // Make array of books
+
+    for(let i = 0; i < books.length; i++){
+        let bookDetails = books[i].split(','); // Get book details
+
+        // Remake object
+        let book = {
+            bookName: bookDetails[0],
+            isbn: bookDetails[1],
+            author: bookDetails[2],
+            yearPublished: bookDetails[3]
+        };
+
+        // Check for matching details
+        if(req.query.isbn == book.isbn  && req.query.author == book.author){
+            bookFound.push(book); // Append if found
+        }
+    }
+
+    // Log the found books
+    console.log('Found books:', bookFound);
+    return res.json(bookFound); // Show in server
+});
+
+app.get('/find-by-author', (req, res) => { // FIND BY AUTHOR
+
+    // Check query
+    console.log("Received query", req.query); 
+
+    const bookFound = []; // Store book if found
+    const bookList = readFileSync('books.txt', 'utf8'); // Read books.txt
+    const books = bookList.split('\n'); // Make array of books
+
+    for(let i = 0; i < books.length; i++){
+        let bookDetails = books[i].split(','); // Get book details
+
+        // Remake object
+        let book = {
+            bookName: bookDetails[0],
+            isbn: bookDetails[1],
+            author: bookDetails[2],
+            yearPublished: bookDetails[3]
+        };
+
+        // Check for matching details
+        if(req.query.author == book.author){
+            bookFound.push(book); // Append if found
+        }
+    }
+
+    // Log the found books
+    console.log('Found books:', bookFound);
+    return res.json(bookFound); // Show in server
 });
 
 // Start the server
